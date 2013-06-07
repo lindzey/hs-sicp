@@ -2,8 +2,7 @@
 ;; worked on in collaboration w/ Rob B.
 
 
-(define (p) 
-  (p))
+(define (p) (p))
 (define (test x y)
   (if (= x 0)
       0

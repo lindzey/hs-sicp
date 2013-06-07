@@ -2,10 +2,6 @@
 
 ;; modifying timed-prime-test to only test divisors 2,3,5,7,9... rather than
 ;; 2,3,4,5,6,7,8,9...
-;; I'm betting that this does NOT give as great a payoff as you'd expect, b/c
-;; testing if a number is divisible by 2 is really fast, and I expect that 
-;; Scheme's implementation of remainder uses this. Does it optimize the 
-;; (= 0 (remainder...)) test??
 
 (define(timed-prime-test n)
   (start-prime-test n (runtime)))
@@ -41,6 +37,14 @@
   (if (= n 2)
       3
       (+ n 2)))
+
+
+;; I'm betting that this does NOT give as great a payoff as you'd expect, b/c
+;; testing if a number is divisible by 2 is really fast, and I expect that 
+;; Scheme's implementation of remainder uses this. Does it optimize the 
+;; (= 0 (remainder...)) test??
+
+;; In practice, it was only about a 30% improvement, not 50%
 
 ;; test code
 (timed-prime-test 1009)
