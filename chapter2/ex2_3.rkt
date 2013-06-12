@@ -2,7 +2,6 @@
 
 (require (prefix-in utils. "../utils.rkt"))
 
-
 (module rect-impl1 racket
   (provide rect)
   (provide length)
