@@ -1,6 +1,5 @@
 #lang racket
 
-
 ;; Church numerals are really really playing with my head
 ;; I haven't figured out how to explain them concisely
 
