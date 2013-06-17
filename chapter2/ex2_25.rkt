@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang racket
 
 ;; trying to pick 7 from these lists
 ; (1 3 (5 7) 9)
