@@ -1,6 +1,6 @@
 #lang racket
 
-(require "../utils.rkt")
+(require (except-in "../utils.rkt" accumulate-n))
 
 (define (accumulate-n op init seq)
   (if (null? (car seq))
