@@ -8,7 +8,6 @@
 (define (count-leaves t)
   (accumulate + 0 (map (lambda (x) 1) (fringe t))))
 
-
 (define mytree (list 1 2 (list 3 4) 5))
 (count-leaves mytree)
 
