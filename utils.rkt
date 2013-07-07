@@ -29,3 +29,20 @@
       '()
       (cons (accumulate op init (map car seq))
             (accumulate-n op init (map cdr seq)))))
+
+;; from prob 2.38
+(provide fold-right)
+(define (fold-right op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (fold-right op initial (cdr sequence)))))
+
+(provide fold-left)
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest)
+        result
+        (iter (op result (car rest))
+              (cdr rest))))
+  (iter initial sequence))
