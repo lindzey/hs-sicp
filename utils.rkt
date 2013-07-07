@@ -63,3 +63,16 @@
         (iter (op result (car rest))
               (cdr rest))))
   (iter initial sequence))
+
+;; from book before 2.40
+(provide flatmap)
+(define (flatmap proc seq)
+  (accumulate append '() (map proc seq)))
+
+
+;; from prob 2.40
+(provide enumerate-interval)
+(define (enumerate-interval i j)
+  (if (< j i)
+      '()      
+      (cons i (enumerate-interval (+ i 1) j))))
