@@ -128,3 +128,51 @@
                          (map (lambda (x) (append (list (list x n)) qq)) 
                               (enumerate-interval 1 board-size))) (queens-helper (- n 1))))))
   (queens-helper board-size))
+
+(define (print-header board-size)
+  (fprintf (current-output-port) "   ")
+  (define (phh curr-num board-size)
+    (fprintf (current-output-port) " ~e " curr-num)
+    (if (< curr-num board-size)
+        (phh (+ 1 curr-num) board-size)
+        '()))
+  (phh 1 board-size)
+  (newline))
+
+(define (find-col row queen-list)
+  (accumulate 
+   + 
+   0 
+   (map (lambda (pp) (if (= row (car pp)) 
+                         (cadr pp)
+                         0))
+        queen-list)))
+
+(define (print-row row board-size queen-list)
+  (fprintf (current-output-port) " ~e " row)
+  ; find which col is the queen
+  (define queen-col (find-col row queen-list))
+  (define (print-helper col curr-col board-size)
+    (if (> curr-col board-size)
+        '()
+        (and (if (= col curr-col)
+                 (fprintf (current-output-port) " Q ")
+                 (fprintf (current-output-port) " - "))
+             (print-helper col (+ curr-col 1) board-size))))
+  (print-helper queen-col 1 board-size)
+  (newline))
+  
+
+(define (display queen-list board-size)
+  ; print header ('   ' '1' ... board-size) with 2 spaces in between
+  (print-header board-size)
+  ; print each row
+  (map (lambda (row) 
+         (print-row row board-size queen-list))
+       (enumerate-interval 1 board-size))
+)
+
+(define all-queens (queens 8))
+(define qq (car all-queens))
+qq
+(display qq 8)
