@@ -2,36 +2,6 @@
 
 (require "../utils.rkt")
 
-;; code from problem statement
-;(define (queens board-size)
-;  (define (queen-cols k)  
-;    (if (= k 0)
-;        (list empty-board)
-;        (filter
-;         (lambda (positions) (safe? k positions))
-;         (flatmap
-;          (lambda (rest-of-queens)
-;            (map (lambda (new-row)
-;                   (adjoin-position new-row k rest-of-queens))
-;                 (enumerate-interval 1 board-size)))
-;          (queen-cols (- k 1))))))
-;  (queen-cols board-size))
-
-;(define rest-of-queens (list 1 1))
-;(define col 1)
-;(map (lambda (new-row)
-;       (adjoin-position new-row col rest-of-queens))
-;     (enumerate-interval 1 8))
-
-;(define col 2)
-;(map
-; (lambda (rest-of-queens)
-;   (map (lambda (new-row)
-;          (adjoin-position new-row col rest-of-queens))
-;        (enumerate-interval 1 8)))
-; (list (list 1 1)))
-
-
 ;; definitions to finish the program
 
 ;; a queen position is safe if it's not in the same row, col, or diagonal
@@ -102,32 +72,46 @@
 
 ;; My way, ignoring scaffolding from the book
 
-(define col1-queens
-  (map (lambda (x) (append (list (list x 1)) (list))) 
-       (enumerate-interval 1 8)))
-
-(define col2-queens
-  (filter (lambda (ll) (safe? (cdr ll) (car ll)))
-          (flatmap (lambda (qq)
-                     (map (lambda (x) (append (list (list x 2)) qq)) 
-                          (enumerate-interval 1 8))) col1-queens)))
-  
-(define col3-queens
-  (filter (lambda (ll) (safe? (cdr ll) (car ll)))
-          (flatmap (lambda (qq)
-                     (map (lambda (x) (append (list (list x 3)) qq)) 
-                          (enumerate-interval 1 8))) col2-queens)))
-
 (define (queens board-size)
   (define (queens-helper n)
-  (if (= n 1)
-      (map (lambda (x) (append (list (list x 1)) (list))) 
-           (enumerate-interval 1 board-size))
-      (filter (lambda (ll) (safe? (cdr ll) (car ll)))
-              (flatmap (lambda (qq)
-                         (map (lambda (x) (append (list (list x n)) qq)) 
-                              (enumerate-interval 1 board-size))) (queens-helper (- n 1))))))
+  (if (= n 0)
+      (list '())
+      (filter 
+       (lambda (ll) (safe? (cdr ll) (car ll)))
+       (flatmap (lambda (qq)
+                  (map (lambda (x) (append (list (list x n)) qq)) 
+                       (enumerate-interval 1 board-size))) 
+                (queens-helper (- n 1))))))
   (queens-helper board-size))
+
+
+;; code from problem statement, massaging my solution into theirs
+(define empty-board '())
+(define (adjoin-position new-row k rest-of-queens)
+  (append (list (list new-row k)) rest-of-queens))
+; checks whether the queen in input column is safe
+(define (safe2? col positions)
+  (define new-queen 
+    (filter (lambda (foo) (= col (cadr foo))) positions))
+  (define other-queens 
+    (filter (lambda (foo) (not (= col (cadr foo)))) positions)) 
+  (safe? other-queens (car new-queen)))
+
+(define (queens2 board-size)
+  (define (queen-cols k)  
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe2? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queen-cols (- k 1))))))
+  (queen-cols board-size))
+
+;; Printing functionality
 
 (define (print-header board-size)
   (fprintf (current-output-port) "   ")
