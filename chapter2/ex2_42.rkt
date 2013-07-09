@@ -16,9 +16,15 @@
            (safe-neg-diag? queens new-pos))))
        
 (define (safe-row? queens new-pos)
-  (accumulate-and (map (lambda (queen_pos) (not (eq? (car queen_pos) (car new-pos)))) queens)))
+  (accumulate-and 
+   (map 
+    (lambda (queen_pos) 
+      (not (eq? (car queen_pos) (car new-pos)))) 
+    queens)))
+
 (define (safe-col? queens new-pos)
   (accumulate-and (map (lambda (queen_pos) (not (eq? (cadr queen_pos) (cadr new-pos)))) queens)))
+
 (define (safe-pos-diag? queens new-pos)
   (accumulate-and (map 
                    (lambda (queen-pos) 
@@ -37,8 +43,15 @@
       #t
       (and (car l1) (accumulate-and (cdr l1)))))
 ;; TODO: why doesn't this work???
+;; It looks like 'and' is some special form that can't be passed around at all. 
+;; special forms are not first-class functions. 
+;; need to dig more here.
+;; this works
+;(define my-and (lambda (x y) (and x y)))
+;(accumulate my-and #t (list #t #t #t))
+;; this doesn't
 ;(define (acc-and l1)
-;  (accumulate and #t l1))
+;  (accumulate and #t l1))(
 
 
 ;; testing safe?
@@ -115,23 +128,16 @@
 
 (define (print-header board-size)
   (fprintf (current-output-port) "   ")
-  (define (phh curr-num board-size)
-    (fprintf (current-output-port) " ~e " curr-num)
-    (if (< curr-num board-size)
-        (phh (+ 1 curr-num) board-size)
-        '()))
-  (phh 1 board-size)
+  (for-each (lambda (col)
+              (fprintf (current-output-port) " ~e " col))
+            (enumerate-interval 1 board-size))
   (newline))
 
 (define (find-col row queen-list)
-  (accumulate 
-   + 
-   0 
-   (map (lambda (pp) (if (= row (car pp)) 
-                         (cadr pp)
-                         0))
-        queen-list)))
-
+  (cond ((null? queen-list) 0)
+        ((= (caar queen-list) row) (cadar queen-list))
+        (else (find-col row (cdr queen-list)))))
+      
 (define (print-row row board-size queen-list)
   (fprintf (current-output-port) " ~e " row)
   ; find which col is the queen
@@ -151,10 +157,9 @@
   ; print header ('   ' '1' ... board-size) with 2 spaces in between
   (print-header board-size)
   ; print each row
-  (map (lambda (row) 
+  (for-each (lambda (row) ;; use for-each if you don't want the returned values from map!
          (print-row row board-size queen-list))
-       (enumerate-interval 1 board-size))
-)
+       (enumerate-interval 1 board-size)))
 
 (define all-queens (queens 8))
 (define qq (car all-queens))
